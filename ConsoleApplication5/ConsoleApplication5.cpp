@@ -21,6 +21,22 @@ void BinaryDump(char* binary_dump,int n)
 		binary_dump[30-i] = (n & mask ? '1' : '0'); 	// 30 - 0
 }
 
+int ConvertBinaryToDecimal(char* binary_dump)
+{
+	int decimal = 0;
+	int power = 1;
+
+	for (int i = 0; i < 31; ++i, power <<= 1)
+		if (binary_dump[i] == '1')
+			decimal += power;
+
+	if (binary_dump[31] == '1')
+		decimal = -decimal;
+
+	return decimal;
+}
+
+
 void OctalDump(char* octal_dump,int n)
 {
 	int mask(07000000000);
@@ -28,6 +44,20 @@ void OctalDump(char* octal_dump,int n)
 	octal_dump[10] = char(((n >> 30) & 03) + 48);				// 10
 	for (int i = 0; i < 10; ++i, mask >>= 3)
 		octal_dump[9-i] = char(((n & mask) >> 27 - i * 3) + 48);	// 9 - 0
+}
+
+int ConvertOctalToDecimal(char* octal_dump)
+{
+	int decimal = 0;
+	int power = 1;
+
+	for (int i = 0; i < 10; ++i, power *= 8)
+	{
+		int digit = octal_dump[9 - i] - '0';
+		decimal += digit * power;
+	}
+
+	return decimal;
 }
 
 
@@ -68,10 +98,12 @@ int main()
 
 	BinaryDump(binary_dump,n);
 	print(binary_dump, 31);
+	cout << endl;
 
 	OctalDump(octal_dump,n);
 	cout << oct << '\n' << n << endl;
 	print(octal_dump,10);
+	cout << endl;
 
 	HexadecimalDump(hexadecimal_dump,n);
 	cout << hex << '\n' << n << endl;
